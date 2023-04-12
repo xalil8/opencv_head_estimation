@@ -43,10 +43,10 @@ while video_cap.isOpened():
     for result in results:
         result = result.cpu().numpy()
         keypoints = result.keypoints
-        for keypoint in keypoints:
-            3print(keypoint)
-            x1,y1,lenght = keypoint
-            print
+        for key in keypoints[0][2:7]:
+            x,y,lenght = key
+            x,y= int(x),int(y)
+            cv2.circle(frame, (x,y), 5, (47,236,85), -1)
 
 
     cv2.imshow("ROI",frame)
