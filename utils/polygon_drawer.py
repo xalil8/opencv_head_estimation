@@ -2,14 +2,14 @@ import cv2
 import numpy as np
 
 
-video_path = "C:/Users/halil/Desktop/new_task/demo.mp4"
+video_path = "C:/Users/halil/Desktop/opencv_head_estimation/demo.mp4"
 
 
 
 class PoligonDrawer:
     def __init__(self):
         self.polygon_coordinates = []
-        cv2.namedWindow('ROI')
+        cv2.namedWindow('ROI',cv2.WINDOW_NORMAL)
         cv2.setMouseCallback('ROI', self.mouse_callback)
 
     def mouse_callback(self, event, x, y, flags, param):
