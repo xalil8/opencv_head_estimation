@@ -7,10 +7,8 @@ import time
 from ultralytics import YOLO
 
 
-# Load a model
 model = YOLO('yolov8s-pose.pt')  # load an official model
 
-# Predict with the model
 
 cv2.namedWindow("ROI",cv2.WINDOW_NORMAL)
 source_video_path = "demo.mp4"
@@ -37,23 +35,17 @@ while video_cap.isOpened():
     if count % 1 != 0:
         continue
 
-    results = model.predict(source=frame,device="mps")
+    results = model.predict(source=frame,device="cpu")
 
+    plotted = results[0].plot()
 
-    for result in results:
-        result = result.cpu().numpy()
-        keypoints = result.keypoints
-        for key in keypoints[0][2:7]:
-            x,y,lenght = key
-            x,y= int(x),int(y)
-            cv2.circle(frame, (x,y), 5, (47,236,85), -1)
+    print(results)
 
-
-    cv2.imshow("ROI",frame)
+    cv2.imshow("ROI",plotted)
     if video_write:
         print(f"frame {count} writing")
         video.write(frame)
-    if cv2.waitKey(30) == ord('q'):
+    if cv2.waitKey(1) == ord('q'):
         break
 
 
