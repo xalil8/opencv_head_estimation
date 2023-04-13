@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-video_path = "C:/Users/halil/Desktop/opencv_head_estimation/demo.mp4"
+video_path = "/Users/xalil/Desktop/opencv_head_estimation/videos/demo.mp4"
 
 
 
