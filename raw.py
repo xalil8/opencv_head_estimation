@@ -12,7 +12,7 @@ start_time = time.time()
 # Predict with the model
 
 
-source_video_path = "demo.mp4"
+source_video_path = "videos/demo.mp4"
 video_saving_path = source_video_path[:len(source_video_path)-4:]+"_output.mp4"
 
 
