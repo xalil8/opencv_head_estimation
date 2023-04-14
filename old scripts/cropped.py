@@ -20,7 +20,7 @@ x, y, w, h = cv2.boundingRect(pts)
 
 
 
-cap = cv2.VideoCapture("demo.mp4")
+cap = cv2.VideoCapture("videos/demo.mp4")
 while True:
     ret, frame = cap.read()
     
