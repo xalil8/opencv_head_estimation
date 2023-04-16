@@ -14,7 +14,6 @@ polygons = [
             [[808, 333], [839, 354], [848, 281], [821, 271]],
             [[1342, 315], [1384, 329], [1332, 649], [1281, 639]],
             [[1458, 354], [1497, 375], [1430, 647], [1392, 645]],
-            #UPSIDE
             [[1470, 281], [1515, 303], [1561, 101], [1512, 86]],
             [[1377, 50], [1349, 211], [1393, 255], [1426, 65]]]
 
@@ -30,7 +29,7 @@ cap = cv2.VideoCapture('videos/demo.mp4')
 # Initialize variables to keep track of shape presence
 previous_count = 0
 shape_present = False
-threshold = 100000
+threshold = 50000
 lower_white = np.array([22, 122, 179])
 upper_white = np.array([255, 255, 255])
 while True:
@@ -58,6 +57,8 @@ while True:
     if len(contours) > 0:
         largest_contour = max(contours, key=cv2.contourArea)
         count = cv2.contourArea(largest_contour)
+        hull = cv2.convexHull(largest_contour)
+
     else:
         count = 0
 
@@ -83,7 +84,7 @@ while True:
     frame_copy = frame.copy()
     if len(contours) > 0:
         if count > threshold:
-            cv2.drawContours(frame_copy, [largest_contour], 0, (0, 0, 255), thickness=2)
+            cv2.drawContours(frame_copy, [hull], 0, (0, 0, 255), thickness=2)
     # Convert the masked frame to a 3-channel image
     masked_frame_color = cv2.cvtColor(masked_frame, cv2.COLOR_GRAY2BGR)
     # Horizontally stack the masked and contour images
