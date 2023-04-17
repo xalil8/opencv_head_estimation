@@ -42,7 +42,7 @@ class PolygonDrawer:
                 points = np.array([self.polygon_coordinates])
                 cv2.polylines(threshold, np.int32([points]), True, (0, 0, 255), 3)
 
-            cv2.imshow("ROI", threshold)
+            cv2.imshow("ROI", frame)
 
             if paused:
                 key = cv2.waitKey(0)
