@@ -4,8 +4,8 @@ import numpy as np
 import time 
 from ultralytics import YOLO
 import math
-global video_write
-global model 
+
+
 model = YOLO('models/yolov8n-pose.pt')  # load an official model
 
 video_write = False

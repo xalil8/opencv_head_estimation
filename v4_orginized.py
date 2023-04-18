@@ -203,6 +203,7 @@ def main():
                 print("ITEM PASSING LINE!")
             cv2.putText(frame,str("URETIM HATTINDA URUN VAR"),(20,160),cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2)
             frame = keypoint_model(frame)
+            
         else:
             shape_present = False
             if previous_count:
