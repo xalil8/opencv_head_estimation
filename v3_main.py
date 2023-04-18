@@ -8,7 +8,7 @@ global video_write
 global model 
 model = YOLO('models/yolov8n-pose.pt')  # load an official model
 
-video_write = True
+video_write = False
 
 def find_distance(A,B):
     x1,y1 = A[0],A[1]
@@ -222,12 +222,12 @@ def main():
         cv2.polylines(frame, [pts2], True, (0, 255, 0), thickness=2)
 
         # Draw the largest white contour on a copy of the frame and show it in a separate window
-        frame_copy = frame.copy()
+        #frame_copy = frame.copy()
         if len(contours) > 0:
             if count > threshold:
                 cv2.drawContours(frame, [hull], 0, (0, 0, 255), thickness=2)
         # Convert the masked frame to a 3-channel image
-        masked_frame_color = cv2.cvtColor(masked_frame, cv2.COLOR_GRAY2BGR)
+        #masked_frame_color = cv2.cvtColor(masked_frame, cv2.COLOR_GRAY2BGR)
         # Horizontally stack the masked and contour images
         #stacked_image = np.hstack((masked_frame_color, frame_copy))
 

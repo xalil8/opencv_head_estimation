@@ -5,9 +5,10 @@ import cv2
 import numpy as np
 import time 
 from ultralytics import YOLO
+
 import math
 global video_write
-video_write = True
+video_write = False
 
 def calculate_angle1(A, B, C):
     AB = math.sqrt((B[0] - A[0])**2 + (B[1] - A[1])**2)
@@ -38,10 +39,10 @@ def calculate_angle(A,B,C):
 
 def main():
 
-    model = YOLO('yolov8n-pose.pt')  # load an official model
+    model = YOLO('models/yolov8n-pose.pt')  # load an official model
     cv2.namedWindow("ROI",cv2.WINDOW_NORMAL)
 
-    source_video_path = "demo.mp4"
+    source_video_path = "videos/demo.mp4"
     video_saving_path = source_video_path[:len(source_video_path)-4:]+"_output.mp4"
 
     video_cap=cv2.VideoCapture(source_video_path)
@@ -64,10 +65,11 @@ def main():
         if count % 2 != 0:
             continue
 
-        results = model.predict(source=frame,device="cpu")
-        print(len(results))
+        results = model.predict(source=frame,device="cpu",half=True)
 
-        for result in results:
+        results = results[0].to("mps")
+        frame = results.plot()
+        """for result in results:
             keypoints = result[0].keypoints
 
             # Define the desired keypoints
@@ -103,7 +105,7 @@ def main():
             cv2.putText(frame,str(right_shoulder_angle),(shoulder_right[0]-20,shoulder_right[1]-5),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
             
             #################logic###################
-            """if left_shoulder_angle >110 and right_shoulder_angle >120:
+            if left_shoulder_angle >110 and right_shoulder_angle >120:
                 cv2.putText(frame,str("GERI DONUS TESPIT EDILDI"),(25,90),cv2.FONT_HERSHEY_SIMPLEX,1.5,(0,0,255),6)"""
 
         #plotted = results[0].plot()
