@@ -16,13 +16,13 @@ class PoseEstimation:
         self.frame_counter = 0
         self.count = 0
         self.paused = False
-        self.video_saving_path = source_video_path[:len(source_video_path)-4:]+"_output.mp4"
+        video_saving_path = source_video_path[:len(source_video_path)-4:]+"_output.mp4"
         self.video_cap = cv2.VideoCapture(source_video_path)
         fps = self.video_cap.get(cv2.CAP_PROP_FPS)
         width, height = int(self.video_cap.get(cv2.CAP_PROP_FRAME_WIDTH)),int(self.video_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         desired_fps = 35
         if self.video_write:
-            self.video = cv2.VideoWriter(self.video_saving_path, cv2.VideoWriter_fourcc(*'mp4v') ,fps, (width,height))
+            self.video = cv2.VideoWriter(video_saving_path, cv2.VideoWriter_fourcc(*'mp4v') ,fps, (width,height))
 
         cv2.namedWindow('STACKED OUTPUT',cv2.WINDOW_NORMAL)
         #cv2.resizeWindow("STACKED OUTPUT",(720,720))
@@ -40,6 +40,9 @@ class PoseEstimation:
                     [[1470, 281], [1515, 303], [1561, 101], [1512, 86]],
                     [[1377, 50], [1349, 211], [1393, 255], [1426, 65]]]
 
+        self.mask = np.zeros((1080, 1920), np.uint8)
+        cv2.fillPoly(self.mask, [self.pts], 255)
+        cv2.fillPoly(self.mask, [self.pts2], 255)
 
     def find_distance(self,A,B):
         x1,y1 = A[0],A[1]
@@ -156,10 +159,7 @@ class PoseEstimation:
     
     def main(self):
 
-        mask = np.zeros((1080, 1920), np.uint8)
-        cv2.fillPoly(mask, [self.pts], 255)
-        cv2.fillPoly(mask, [self.pts2], 255)
-
+        
         while True:
             # Read a frame from the video stream
             ret, frame = self.video_cap.read()
@@ -178,13 +178,13 @@ class PoseEstimation:
             mask_white = cv2.inRange(frame, self.lower_white, self.upper_white)
 
             # Apply the polygon mask to the white filtered frame
-            masked_frame = cv2.bitwise_and(mask_white, mask_white, mask=mask)
-
+            masked_frame = cv2.bitwise_and(mask_white, mask_white, mask=self.mask)
             kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (9,9))
             masked_frame = cv2.morphologyEx(masked_frame, cv2.MORPH_OPEN, kernel)
             # Find contours of white pixels in the masked frame
             contours, _ = cv2.findContours(masked_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+            del kernel,masked_frame,mask_white
             # Calculate the area of the largest white contour
             if len(contours) > 0:
                 largest_contour = max(contours, key=cv2.contourArea)
@@ -215,14 +215,9 @@ class PoseEstimation:
             cv2.polylines(frame, [self.pts2], True, (0, 255, 0), thickness=2)
 
             # Draw the largest white contour on a copy of the frame and show it in a separate window
-            #frame_copy = frame.copy()
             if len(contours) > 0:
                 if self.count > self.threshold:
                     cv2.drawContours(frame, [hull], 0, (0, 0, 255), thickness=2)
-            # Convert the masked frame to a 3-channel image
-            #masked_frame_color = cv2.cvtColor(masked_frame, cv2.COLOR_GRAY2BGR)
-            # Horizontally stack the masked and contour images
-            #stacked_image = np.hstack((masked_frame_color, frame_copy))
 
             if not self.video_write:
                 cv2.imshow('STACKED OUTPUT', frame)
