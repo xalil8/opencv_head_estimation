@@ -175,7 +175,7 @@ def main():
         frame_counter += 1
 
         #ADJUST FPS
-        if frame_counter % 1 != 0:
+        if frame_counter % 3 != 0:
             continue
 
         for polygon in polygons:
